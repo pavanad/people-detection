@@ -1,1 +1,20 @@
-# To ensure app dependencies are ported from your virtual environment/host machine into your container, run 'pip freeze > requirements.txt' in the terminal to overwrite this file
+appdirs==1.4.4
+attrs==19.3.0
+black==19.10b0
+certifi==2020.6.20
+cffi==1.14.0
+click==7.1.2
+cryptography==2.9.2
+decorator==4.4.2
+imutils==0.5.3
+numpy==1.19.0
+opencv-contrib-python==4.3.0.36
+pathspec==0.8.0
+pycparser==2.20
+python-dotenv==0.14.0
+python-telegram-bot==12.8
+regex==2020.6.8
+six==1.15.0
+toml==0.10.1
+tornado==6.0.4
+typed-ast==1.4.1
