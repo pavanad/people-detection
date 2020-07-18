@@ -6,7 +6,7 @@ import cv2
 import telegram
 from numpy.core.numeric import ndarray
 
-from config.settinfs import CHAT_ID, TELEGRAM_TOKEN
+from config.settings import CHAT_ID, TELEGRAM_TOKEN
 
 
 class BotTelegram:

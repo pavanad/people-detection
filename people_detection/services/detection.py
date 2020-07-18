@@ -34,7 +34,7 @@ class PeopleDetection:
     def __draw_boxes(self, pick: ndarray):
         """ Draw the original bounding boxes. """
         for (xA, yA, xB, yB) in pick:
-            cv2.rectangle(self.frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
+            cv2.rectangle(self.__frame, (xA, yA), (xB, yB), (0, 255, 0), 2)
 
     def __detect_people(self):
         """ Detect people in the image. """
