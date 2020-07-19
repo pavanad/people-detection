@@ -1,20 +1,30 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
+
 import cv2
 import numpy as np
 from imutils.object_detection import non_max_suppression
 from numpy.core.numeric import ndarray
 
+from .bot import BotTelegram
+
 
 class PeopleDetection:
 
-    SCALE = 1.03
+    SCALE = 1.5
     PADDING = (8, 8)
     WIN_STRIDE = (4, 4)
 
+    MIN_DETECT_FRAMES = 10
+    MIN_NOTIFICATION_SECONDS = 60
+
     def __init__(self):
         self.__frame = None
+        self.__detect_counter = 0
+        self.__bot = BotTelegram()
         self.__hog = self.__get_hog_linear_svm()
+        self.__last_notification = datetime.now()
 
     def __get_hog_linear_svm(self) -> cv2.HOGDescriptor:
         """ Initialize the HOG descriptor/person detector. """
@@ -39,19 +49,33 @@ class PeopleDetection:
     def __detect_people(self):
         """ Detect people in the image. """
 
-        if self.__frame is not None:
-            (rects, weights) = self.__hog.detectMultiScale(
-                self.__frame,
-                winStride=self.WIN_STRIDE,
-                padding=self.PADDING,
-                scale=self.SCALE,
-            )
-            pick = self.__apply_nms(rects)
-            self.__draw_boxes(pick)
-            print(f"rects: {len(rects)} | pick: {len(pick)}")
+        if self.__frame is None:
+            return
+
+        timestamp = datetime.now()
+        (rects, weights) = self.__hog.detectMultiScale(
+            self.__frame,
+            winStride=self.WIN_STRIDE,
+            padding=self.PADDING,
+            scale=self.SCALE,
+        )
+        if not len(rects):
+            return
+
+        pick = self.__apply_nms(rects)
+        self.__draw_boxes(pick)
+
+        # check to see if enough time has passed between notifications
+        diff_time = timestamp - self.__last_notification
+        if diff_time.seconds >= self.MIN_NOTIFICATION_SECONDS:
+            self.__detect_counter += 1
+            if self.__detect_counter >= self.MIN_DETECT_FRAMES:
+                self.__bot.send_photo(self.__frame)
+                self.__detect_counter = 0
+                self.__last_notification = timestamp
 
     def set_frame(self, frame: ndarray):
-        self.frame = frame
+        self.__frame = frame
 
     def detect(self, frame: ndarray = None):
         """ Initialize detect people. """
