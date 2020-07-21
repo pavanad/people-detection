@@ -3,21 +3,30 @@
 from datetime import datetime
 
 import cv2
+import imutils
 import numpy as np
 from imutils.object_detection import non_max_suppression
 from numpy.core.numeric import ndarray
+
+from config.settings import USE_ROI
 
 from .bot import BotTelegram
 
 
 class PeopleDetection:
 
-    SCALE = 1.5
+    SCALE = 1.05
     PADDING = (8, 8)
     WIN_STRIDE = (4, 4)
 
+    MIN_WIDTH = 400
     MIN_DETECT_FRAMES = 10
-    MIN_NOTIFICATION_SECONDS = 60
+    MIN_NOTIFICATION_SECONDS = 30
+
+    X_ROI = 0
+    Y_ROI = 30
+    WIDTH_ROI = 285
+    HEIGHT_ROI = 240
 
     def __init__(self):
         self.__frame = None
@@ -74,12 +83,22 @@ class PeopleDetection:
                 self.__detect_counter = 0
                 self.__last_notification = timestamp
 
+    def __get_roi(self, frame):
+        """ Get the region of interest of the camera. """
+        return frame[
+            self.Y_ROI : self.Y_ROI + self.HEIGHT_ROI,
+            self.X_ROI : self.X_ROI + self.WIDTH_ROI,
+        ]
+
     def set_frame(self, frame: ndarray):
-        self.__frame = frame
+        resize = imutils.resize(frame, width=self.MIN_WIDTH)
+        self.__frame = self.__get_roi(resize) if USE_ROI else resize
 
     def detect(self, frame: ndarray = None):
         """ Initialize detect people. """
+
         if frame is not None:
-            self.__frame = frame
+            self.set_frame(frame)
+
         self.__detect_people()
         return self.__frame
