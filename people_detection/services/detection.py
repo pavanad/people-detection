@@ -24,9 +24,9 @@ class PeopleDetection:
     MIN_NOTIFICATION_SECONDS = 30
 
     X_ROI = 0
-    Y_ROI = 30
-    WIDTH_ROI = 285
-    HEIGHT_ROI = 240
+    Y_ROI = 25 #30
+    WIDTH_ROI = 250 #285
+    HEIGHT_ROI = 214 #240
 
     def __init__(self):
         self.__frame = None
@@ -91,8 +91,9 @@ class PeopleDetection:
         ]
 
     def set_frame(self, frame: ndarray):
-        resize = imutils.resize(frame, width=self.MIN_WIDTH)
-        self.__frame = self.__get_roi(resize) if USE_ROI else resize
+        roi = self.__get_roi(frame) if USE_ROI else frame
+        resize = imutils.resize(roi, width=self.MIN_WIDTH)
+        self.__frame = resize
 
     def detect(self, frame: ndarray = None):
         """ Initialize detect people. """
