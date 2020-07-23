@@ -8,7 +8,7 @@ import numpy as np
 from imutils.object_detection import non_max_suppression
 from numpy.core.numeric import ndarray
 
-from config.settings import USE_ROI
+from config.settings import COORD_ROI, USE_ROI
 
 from .bot import BotTelegram
 
@@ -23,13 +23,9 @@ class PeopleDetection:
     MIN_DETECT_FRAMES = 10
     MIN_NOTIFICATION_SECONDS = 30
 
-    X_ROI = 0
-    Y_ROI = 25 #30
-    WIDTH_ROI = 250 #285
-    HEIGHT_ROI = 214 #240
-
     def __init__(self):
         self.__frame = None
+        self.__original = None
         self.__detect_counter = 0
         self.__bot = BotTelegram()
         self.__hog = self.__get_hog_linear_svm()
@@ -79,21 +75,22 @@ class PeopleDetection:
         if diff_time.seconds >= self.MIN_NOTIFICATION_SECONDS:
             self.__detect_counter += 1
             if self.__detect_counter >= self.MIN_DETECT_FRAMES:
-                self.__bot.send_photo(self.__frame)
                 self.__detect_counter = 0
                 self.__last_notification = timestamp
+                self.__bot.send_photo(self.__original)
 
     def __get_roi(self, frame):
         """ Get the region of interest of the camera. """
+        coord = COORD_ROI.get("camera1")
         return frame[
-            self.Y_ROI : self.Y_ROI + self.HEIGHT_ROI,
-            self.X_ROI : self.X_ROI + self.WIDTH_ROI,
+            coord["y"] : coord["y"] + coord["height"],
+            coord["x"] : coord["x"] + coord["width"],
         ]
 
     def set_frame(self, frame: ndarray):
         roi = self.__get_roi(frame) if USE_ROI else frame
-        resize = imutils.resize(roi, width=self.MIN_WIDTH)
-        self.__frame = resize
+        self.__frame = roi
+        self.__original = imutils.resize(roi, width=self.MIN_WIDTH)
 
     def detect(self, frame: ndarray = None):
         """ Initialize detect people. """

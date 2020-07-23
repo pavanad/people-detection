@@ -33,10 +33,8 @@ def main():
                 key = cv2.waitKey(1)
                 if key == 27:
                     break
-
         except Exception as error:
             print(f"Error: {error}")
-
     cap.release()
 
     if DEBUG:

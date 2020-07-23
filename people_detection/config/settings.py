@@ -16,3 +16,12 @@ RTSP_URL = os.getenv("RTSP_URL")
 # a region of interest for the camera
 
 USE_ROI = True
+
+COORD_ROI = {
+    "camera1": {
+        "x": 0,
+        "y": 25,
+        "width": 250,
+        "height": 214
+    }
+}
