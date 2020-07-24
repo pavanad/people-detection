@@ -21,7 +21,7 @@ class PeopleDetection:
 
     MIN_WIDTH = 400
     MIN_DETECT_FRAMES = 10
-    MIN_NOTIFICATION_SECONDS = 30
+    MIN_NOTIFICATION_SECONDS = 60
 
     def __init__(self):
         self.__frame = None
@@ -88,9 +88,9 @@ class PeopleDetection:
         ]
 
     def set_frame(self, frame: ndarray):
-        roi = self.__get_roi(frame) if USE_ROI else frame
-        self.__frame = roi
-        self.__original = imutils.resize(roi, width=self.MIN_WIDTH)
+        """ Set frame and get roi of the camera. """
+        self.__frame = self.__get_roi(frame) if USE_ROI else frame
+        self.__original = imutils.resize(frame, width=self.MIN_WIDTH)
 
     def detect(self, frame: ndarray = None):
         """ Initialize detect people. """
