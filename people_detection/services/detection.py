@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from datetime import datetime
 
 import cv2
@@ -30,6 +31,8 @@ class PeopleDetection:
         self.__bot = BotTelegram()
         self.__hog = self.__get_hog_linear_svm()
         self.__last_notification = datetime.now()
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.info("Creating people detection object")
 
     def __get_hog_linear_svm(self) -> cv2.HOGDescriptor:
         """ Initialize the HOG descriptor/person detector. """
@@ -78,6 +81,7 @@ class PeopleDetection:
                 self.__detect_counter = 0
                 self.__last_notification = timestamp
                 self.__bot.send_photo(self.__original)
+                self.__logger.info("Detected person and sent notification")
 
     def __get_roi(self, frame):
         """ Get the region of interest of the camera. """

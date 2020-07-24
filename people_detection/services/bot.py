@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 from io import BytesIO
 
 import cv2
@@ -13,6 +14,8 @@ class BotTelegram:
     def __init__(self):
         self.__chat_id = CHAT_ID
         self.__bot = telegram.Bot(token=TELEGRAM_TOKEN)
+        self.__logger = logging.getLogger(__name__)
+        self.__logger.info("Creating bot telegram object")
 
     def __ndarray_to_buffer(self, photo: ndarray) -> BytesIO:
         _, buffer = cv2.imencode(".jpg", photo)
