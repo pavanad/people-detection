@@ -19,3 +19,10 @@ TELEGRAM_TOKEN=<YOUR TOKEN HERE>
 RTSP_URL=<YOUR URL HERE>
 ```
 
+## Running with Docker
+
+```bash
+sudo docker build -t peopledetection .
+sudo docker run -v /logs/:/app/logs -d --name people-detection --restart=always peopledetection
+```
+

@@ -19,7 +19,7 @@ def main():
         format="%(asctime)s %(levelname)s (%(name)s) %(message)s",
         datefmt="%d-%m-%Y %H:%M:%S",
         filename="logs/people.log",
-        filemode="w",
+        filemode="a",
     )
     logger = logging.getLogger(__name__)
     logger.info("Initializing people detection service")

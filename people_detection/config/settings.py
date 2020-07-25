@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DEBUG = True
+DEBUG = False
 
 CHAT_ID = os.getenv("CHAT_ID")
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
